@@ -21,5 +21,5 @@
 #ifndef CHOMP_H
 #define CHOMP_H
 
-int chomp(char *input, int bytes_to_chomp);
+int chomp(char *src, char *dst, int bytes_to_chomp);
 #endif /* CHOMP_H */
