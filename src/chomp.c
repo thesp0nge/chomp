@@ -18,11 +18,18 @@
  * MA 02110-1301, USA.
  */
 
+#include<stdio.h>
 #include<stddef.h>
+#include<string.h>
 #include"chomp.h"
 
-int chomp(char *src, char *dst, int bytes_to_chomp) {
+int chomp(char *dst, const char *src, int bytes_to_chomp) {
     if (src == NULL)
         return -1;
+    if (strcmp(src, "") == 0)
+        return -1;
+    if ((bytes_to_chomp > strlen(src)) || (bytes_to_chomp < 0))
+        return -1;
+    strncpy(dst, src, strlen(src) - bytes_to_chomp);
     return 0;
 }

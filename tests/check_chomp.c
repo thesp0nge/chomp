@@ -19,14 +19,59 @@
  */
 
 #include<stdlib.h>
+#include<time.h>
+#include<stdlib.h>
 #include<check.h>
 #include"../src/chomp.h"
 
-START_TEST(test_chomp_null_string)
+START_TEST(test_chomp_negative_bytes)
 {
     char *dst;
-    int ret = chomp(NULL, dst, 1);
+    int ret = chomp(dst, "test at lounge", -1);
     ck_assert_int_eq(ret, -1);
+}
+END_TEST
+
+START_TEST(test_chomp_src_null_string)
+{
+    char dst[30];
+    int ret = chomp(dst, NULL, 1);
+    ck_assert_int_eq(ret, -1);
+}
+END_TEST
+
+START_TEST(test_chomp_too_many_bytes)
+{
+    char *src="This is a test";
+    char dst[30];
+
+    int ret=chomp(dst, src, strlen(src)+1);
+    ck_assert_int_eq(ret, -1);
+}
+END_TEST
+
+START_TEST(test_chomp_works_1_byte)
+{
+    char *src="This is a test";
+    char dst[30];
+
+    memset(dst, 0, 30);
+    int ret = chomp(dst, src, 1);
+    ck_assert_int_eq(ret, 0);
+    ck_assert_str_eq(dst, "This is a tes");
+
+}
+
+START_TEST(test_chomp_works_5_byte)
+{
+    char *src="This is a test";
+    char dst[30];
+
+    memset(dst, 0, 30);
+    int ret = chomp(dst, src, 5);
+    ck_assert_int_eq(ret, 0);
+    ck_assert_str_eq(dst, "This is a");
+
 }
 
 Suite *chomp_suite(void)
@@ -37,7 +82,11 @@ Suite *chomp_suite(void)
     s = suite_create("Chomp");
     tc_core = tcase_create("Core");
 
-    tcase_add_test(tc_core, test_chomp_null_string);
+    tcase_add_test(tc_core, test_chomp_src_null_string);
+    tcase_add_test(tc_core, test_chomp_negative_bytes);
+    tcase_add_test(tc_core, test_chomp_too_many_bytes);
+    tcase_add_test(tc_core, test_chomp_works_1_byte);
+    tcase_add_test(tc_core, test_chomp_works_5_byte);
     suite_add_tcase(s, tc_core);
 
     return s;
